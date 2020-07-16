@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -74,6 +75,11 @@ public class TDView extends SurfaceView
 
 
     private void update() {
+        for (EnemyShip enemy: enemyShips) {
+            if (Rect.intersects(player.getHitbox(), enemy.getHitbox())) {
+                enemy.setX(-enemy.getBitmap().getWidth());
+            }
+        }
         player.update();
         //update the speed of enemy ships when player increases speed
         for (EnemyShip enemy: enemyShips) {
@@ -91,16 +97,20 @@ public class TDView extends SurfaceView
         if (holder.getSurface().isValid()) {
             canvas = holder.lockCanvas();
             canvas.drawColor(Color.argb(255, 0, 0, 0));
-            canvas.drawBitmap(
-                    player.getBitmap(),
-                    player.getX(),  player.getY(), paint);
+            Paint hitBoxs = new Paint();
+            hitBoxs.setColor(Color.WHITE);
+
+            canvas.drawRect(player.getHitbox().left,player.getHitbox().top,player.getHitbox().right,player.getHitbox().bottom, hitBoxs);
+            canvas.drawBitmap(player.getBitmap(), player.getX(),  player.getY(), paint);
+
             for (EnemyShip enemy: enemyShips) {
+                canvas.drawRect(enemy.getHitbox().left,enemy.getHitbox().top, enemy.getHitbox().right,enemy.getHitbox().bottom, hitBoxs);
                 canvas.drawBitmap(enemy.getBitmap(), enemy.getX(), enemy.getY(), paint);
             }
             //draw the dust
             dustColor.setColor(Color.WHITE);
             for (SpaceDust dust: dustParticles) {
-                canvas.drawCircle(dust.getX(),dust.getY(), 5, dustColor);
+                canvas.drawCircle(dust.getX(),dust.getY(), 2, dustColor);
             }
             holder.unlockCanvasAndPost(canvas);
         }

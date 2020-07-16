@@ -3,6 +3,7 @@ package edu.utep.cs.cs4381.tappydefender.model;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 
 import edu.utep.cs.cs4381.tappydefender.R;
 import edu.utep.cs.cs4381.tappydefender.TDView;
@@ -18,6 +19,8 @@ public class PlayerShip {
     private static final int MIN_SPEED = 1;
     private static final int MAX_SPEED = 20;
 
+    private Rect hitbox;
+
     private boolean boosting;
 
     private int maxY;
@@ -25,14 +28,15 @@ public class PlayerShip {
 
 
     public PlayerShip(Context context, int width, int height) {
-
         x = 50;
         y = 50;
+        speed = 1;
         bitmap = BitmapFactory.decodeResource(
                 context.getResources(), R.drawable.ship);
         maxY = height - bitmap.getHeight(); // Q: why?
         minY = 0;
 
+        hitbox = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
     }
 
 
@@ -61,6 +65,8 @@ public class PlayerShip {
         if (y > maxY) {
             y = maxY;
         }
+
+        hitbox.set(x, y, x + bitmap.getWidth(), y + bitmap.getHeight());
     }
 
 
@@ -79,4 +85,7 @@ public class PlayerShip {
     public int getSpeed() {
         return speed;
     }
+
+    public Rect getHitbox() { return hitbox; }
+
 }
