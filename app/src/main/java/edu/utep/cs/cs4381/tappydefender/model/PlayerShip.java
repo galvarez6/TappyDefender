@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 
 import edu.utep.cs.cs4381.tappydefender.R;
-import edu.utep.cs.cs4381.tappydefender.TDView;
 
 public class PlayerShip {
 
@@ -26,6 +25,8 @@ public class PlayerShip {
     private int maxY;
     private int minY;
 
+    private int shieldStrength;
+
 
     public PlayerShip(Context context, int width, int height) {
         x = 50;
@@ -35,6 +36,8 @@ public class PlayerShip {
                 context.getResources(), R.drawable.ship);
         maxY = height - bitmap.getHeight(); // Q: why?
         minY = 0;
+
+        shieldStrength = 2;
 
         hitbox = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
     }
@@ -88,4 +91,5 @@ public class PlayerShip {
 
     public Rect getHitbox() { return hitbox; }
 
+    public int getShieldStrength() { return shieldStrength; }
 }

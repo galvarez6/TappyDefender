@@ -30,11 +30,25 @@ public class TDView extends SurfaceView
     private Paint dustColor;
 
 
+    private float distanceRemaining;
+    private long timeTaken;
+    private long timeStarted;
+    private long fastestTime;
+    private int screenX;
+    private int screenY;
+
+    private Context context;
+
+
     private List<EnemyShip> enemyShips = new CopyOnWriteArrayList<>();
     private List<SpaceDust> dustParticles = new CopyOnWriteArrayList<>();
 
+
     public TDView(Context context, int width, int height) {
         super(context);
+        this.context = context;
+        screenX = width;
+        screenY = height;
         player = new PlayerShip(context,width,height);
         holder = getHolder();
         paint = new Paint();
@@ -112,10 +126,29 @@ public class TDView extends SurfaceView
             for (SpaceDust dust: dustParticles) {
                 canvas.drawCircle(dust.getX(),dust.getY(), 2, dustColor);
             }
+
+            paint.setColor(Color.argb(255, 255, 255, 255));
+            paint.setStrokeWidth(4);
+            paint.setTextSize(48);
+            int yy = 50;
+            paint.setTextAlign(Paint.Align.LEFT);
+            canvas.drawText(formatTime("Fastest", fastestTime), 10, yy, paint);
+            canvas.drawText("Shield: " + player.getShieldStrength(), 10, screenY - yy, paint);
+
+            paint.setTextAlign(Paint.Align.CENTER);
+            canvas.drawText(formatTime("Time", timeTaken), screenX / 2, yy, paint);
+            canvas.drawText("Distance: " + distanceRemaining / 1000 + " KM", screenX / 2, screenY - yy, paint);
+
+            paint.setTextAlign(Paint.Align.RIGHT);
+            canvas.drawText("Speed: " + player.getSpeed() * 60 + " MPS", screenX - 10, screenY - yy, paint);
+
+
             holder.unlockCanvasAndPost(canvas);
         }
 
-    }
+    }//end of draw
+
+
     private void control() {
         try {
             gameThread.sleep(17); // in milliseconds
@@ -135,7 +168,12 @@ public class TDView extends SurfaceView
                 break;
         }
         return true;
-    }
+    }//end of on touch
+
+    private String formatTime(String label, long time) { // time in milliseconds
+        return String.format("%s: %d.%03ds", label, time / 1000, time % 1000);
+    }//end of format time
+
 
 
 
