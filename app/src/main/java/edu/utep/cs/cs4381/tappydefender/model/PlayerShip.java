@@ -92,4 +92,9 @@ public class PlayerShip {
     public Rect getHitbox() { return hitbox; }
 
     public int getShieldStrength() { return shieldStrength; }
+
+    public int reduceShieldStrength() {
+        return --shieldStrength;
+    }
+
 }
