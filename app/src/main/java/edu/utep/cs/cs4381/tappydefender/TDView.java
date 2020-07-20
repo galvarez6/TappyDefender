@@ -63,8 +63,6 @@ public class TDView extends SurfaceView implements Runnable {
     }
 
     private void startGame() {
-        Random random = new Random();
-        int enemyNum = random.nextInt(7);
         player = new PlayerShip(context, screenX, screenY);
         //draw dust when game starts
         dustParticles.clear();
@@ -73,7 +71,7 @@ public class TDView extends SurfaceView implements Runnable {
         }
         //draw enemies
         enemyShips.clear();
-        for(int i = 0; i < enemyNum; i++){
+        for(int i = 0; i < 3; i++){
             enemyShips.add(new EnemyShip(context,screenX,screenY));
         }
         //draw shields
