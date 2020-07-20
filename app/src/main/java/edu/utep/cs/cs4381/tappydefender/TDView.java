@@ -125,7 +125,7 @@ public class TDView extends SurfaceView
         for( SpaceDust d: dustParticles){
             d.update(player.getSpeed());
         }
-
+        //reduce shield levels of player
         if (hitDetected) {
             if (player.reduceShieldStrength() <= 0) {
                 gameEnded = true;
