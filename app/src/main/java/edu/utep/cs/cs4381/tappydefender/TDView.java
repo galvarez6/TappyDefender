@@ -10,15 +10,16 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import edu.utep.cs.cs4381.tappydefender.model.EnemyShip;
 import edu.utep.cs.cs4381.tappydefender.model.PlayerShip;
+import edu.utep.cs.cs4381.tappydefender.model.Shield;
 import edu.utep.cs.cs4381.tappydefender.model.SpaceDust;
 
 
-public class TDView extends SurfaceView
-        implements Runnable {
+public class TDView extends SurfaceView implements Runnable {
 
     private Thread gameThread;
     private boolean playing;
@@ -44,6 +45,7 @@ public class TDView extends SurfaceView
 
     private List<EnemyShip> enemyShips = new CopyOnWriteArrayList<>();
     private List<SpaceDust> dustParticles = new CopyOnWriteArrayList<>();
+    private List<Shield> extraShield = new CopyOnWriteArrayList<>();
 
 
     public TDView(Context context, int width, int height) {
@@ -56,28 +58,28 @@ public class TDView extends SurfaceView
         paint = new Paint();
         dustColor = new Paint();
 
-        enemyShips.add(new EnemyShip(context, width, height));
-        enemyShips.add(new EnemyShip(context, width, height));
-        enemyShips.add(new EnemyShip(context, width, height));
-
-        for(int i = 0; i<=100; i++){
-            dustParticles.add(new SpaceDust(width,height));
-        }
-
         startGame();
 
     }
 
     private void startGame() {
+        Random random = new Random();
+        int enemyNum = random.nextInt(7);
         player = new PlayerShip(context, screenX, screenY);
-        enemyShips.clear();
-        enemyShips.add(new EnemyShip(context,screenX,screenY));
-        enemyShips.add(new EnemyShip(context,screenX,screenY));
-        enemyShips.add(new EnemyShip(context,screenX,screenY));
+        //draw dust when game starts
         dustParticles.clear();
-        for (int i = 0; i < 40; i++) {
+        for (int i = 0; i < 100; i++) {
             dustParticles.add(new SpaceDust(screenX, screenY));
         }
+        //draw enemies
+        enemyShips.clear();
+        for(int i = 0; i < enemyNum; i++){
+            enemyShips.add(new EnemyShip(context,screenX,screenY));
+        }
+        //draw shields
+        extraShield.clear();
+        extraShield.add(new Shield(context,screenX,screenY));
+
         distanceRemaining = 10000; // 10 km
         timeTaken = 0;
         timeStarted = System.currentTimeMillis();
@@ -110,10 +112,17 @@ public class TDView extends SurfaceView
 
     private void update() {
         boolean hitDetected = false;
+        boolean shieldGet = false;
         for (EnemyShip enemy: enemyShips) {
             if (Rect.intersects(player.getHitbox(), enemy.getHitbox())) {
                 hitDetected = true;
                 enemy.setX(-enemy.getBitmap().getWidth());
+            }
+        }
+        for (Shield e: extraShield) {
+            if (Rect.intersects(player.getHitbox(), e.getHitbox())) {
+                shieldGet = true;
+                e.setX(-e.getBitmap().getWidth());
             }
         }
         player.update();
@@ -125,11 +134,17 @@ public class TDView extends SurfaceView
         for( SpaceDust d: dustParticles){
             d.update(player.getSpeed());
         }
+        for (Shield e: extraShield) {
+            e.update(player.getSpeed());
+        }
         //reduce shield levels of player
         if (hitDetected) {
             if (player.reduceShieldStrength() <= 0) {
                 gameEnded = true;
             }
+        }
+        if (shieldGet) {
+            player.increaseShieldStrength();
         }
         if (!gameEnded) {
             distanceRemaining -= player.getSpeed();
@@ -165,6 +180,11 @@ public class TDView extends SurfaceView
             dustColor.setColor(Color.WHITE);
             for (SpaceDust dust: dustParticles) {
                 canvas.drawCircle(dust.getX(),dust.getY(), 2, dustColor);
+            }
+
+            for (Shield e: extraShield) {
+                canvas.drawRect(e.getHitbox().left,e.getHitbox().top, e.getHitbox().right,e.getHitbox().bottom, hitBoxs);
+                canvas.drawBitmap(e.getBitmap(), e.getX(), e.getY(), paint);
             }
             if (!gameEnded) {
                 paint.setColor(Color.argb(255, 255, 255, 255));

@@ -97,4 +97,8 @@ public class PlayerShip {
         return --shieldStrength;
     }
 
+    public void increaseShieldStrength() {
+        shieldStrength ++;
+    }
+
 }
