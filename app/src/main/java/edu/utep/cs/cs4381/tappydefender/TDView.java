@@ -191,6 +191,10 @@ public class TDView extends SurfaceView implements Runnable {
                 paint.setStrokeWidth(4);
                 paint.setTextSize(48);
                 int yy = 50;
+
+                paint.setTextAlign(Paint.Align.LEFT);
+                canvas.drawCircle((float) ((screenX/3)*2.5),yy,50,paint);
+
                 paint.setTextAlign(Paint.Align.LEFT);
                 canvas.drawText(formatTime("Fastest", fastestTime), 10, yy, paint);
                 canvas.drawText("Shield: " + player.getShieldStrength(), 10, screenY - yy, paint);
