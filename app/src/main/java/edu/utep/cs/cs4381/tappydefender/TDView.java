@@ -184,6 +184,15 @@ public class TDView extends SurfaceView implements Runnable {
                 canvas.drawRect(e.getHitbox().left,e.getHitbox().top, e.getHitbox().right,e.getHitbox().bottom, hitBoxs);
                 canvas.drawBitmap(e.getBitmap(), e.getX(), e.getY(), paint);
             }
+
+            if(!playing){
+                Paint p = new Paint();
+                p.setStrokeWidth(4);
+                p.setColor(Color.WHITE);
+                p.setTextSize(50);
+                canvas.drawText("Paused, Tap to resume", screenX/2, screenY/2, p);
+            }
+
             if (!gameEnded) {
                 paint.setColor(Color.argb(255, 255, 255, 255));
                 paint.setStrokeWidth(4);
@@ -230,10 +239,24 @@ public class TDView extends SurfaceView implements Runnable {
     }
 
 
+    public interface PauseListener{
+        void clicked(int index);
+    }
+
+    private PauseListener pListen;
+
+    public void setPauseListener(PauseListener p) { pListen = p;}
+
+
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         switch (motionEvent.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+                int index = locateButton(motionEvent.getX(),motionEvent.getY());
+                if(index == 1){pause();}
+                else if(!playing){
+                    resume();
+                }
                 player.setBoosting(true);
                 if (gameEnded) {
                     startGame();
@@ -245,6 +268,19 @@ public class TDView extends SurfaceView implements Runnable {
         }
         return true;
     }//end of on touch
+
+    public int locateButton(float x, float y){
+        if(isIn(x,y,(float) ((screenX/3)*2.5),50,50)){
+            return 1;
+        }
+        return 0;
+    }
+
+    private static boolean isIn(float x, float y, float cx, float cy, float radius){
+        float dx = x-cx;
+        float dy = y-cy;
+        return dx * dx + dy <= radius*radius;
+    }
 
     private String formatTime(String label, long time) { // time in milliseconds
         return String.format("%s: %d.%03ds", label, time / 1000, time % 1000);

@@ -3,6 +3,7 @@ package edu.utep.cs.cs4381.tappydefender;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,6 +23,9 @@ public class GameActivity extends AppCompatActivity {
 
         gameView = new TDView(this, size.x, size.y);
         setContentView(gameView);
+
+        /*gameView.setPauseListener(i -> {gameView.invalidate();
+            Toast.makeText(this, "clicked"+i,Toast.LENGTH_SHORT).show();});*/
 
     }
 
