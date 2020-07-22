@@ -11,7 +11,6 @@ public class SpaceDust {
     //set screen bounds for the dust
     private int maxX, maxY, minX, minY;
 
-    Random randomDust = new Random();
 
 
     //constructor for the dust
@@ -21,6 +20,7 @@ public class SpaceDust {
         minX = 0;
         minY = 0;
 
+        Random randomDust = new Random();
         //dust moves in random speed
         speed = randomDust.nextInt(10);
 
@@ -35,6 +35,8 @@ public class SpaceDust {
     public void update(int playerSpeed) {
         x -= playerSpeed;
         x -= speed;
+        Random randomDust = new Random();
+
         if(x < 0){
             x = maxX;
             y = randomDust.nextInt(maxY);
