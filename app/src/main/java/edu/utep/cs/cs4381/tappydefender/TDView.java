@@ -201,6 +201,10 @@ public class TDView extends SurfaceView implements Runnable {
 
                 paint.setTextAlign(Paint.Align.LEFT);
                 canvas.drawCircle((float) ((screenX/3)*2.5),yy,50,paint);
+                Paint p = new Paint();
+                p.setColor(Color.BLACK);
+                p.setTextSize(60);
+                canvas.drawText("||",(float) ((screenX/3)*2.475),yy+15,p);
 
                 paint.setTextAlign(Paint.Align.LEFT);
                 canvas.drawText(formatTime("Fastest", fastestTime), 10, yy, paint);
@@ -279,7 +283,7 @@ public class TDView extends SurfaceView implements Runnable {
     private static boolean isIn(float x, float y, float cx, float cy, float radius){
         float dx = x-cx;
         float dy = y-cy;
-        return dx * dx + dy <= radius*radius;
+        return (dx * dx) + (dy * dy) <= radius*radius;
     }
 
     private String formatTime(String label, long time) { // time in milliseconds
