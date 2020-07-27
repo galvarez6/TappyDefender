@@ -163,6 +163,7 @@ public class TDView extends SurfaceView implements Runnable {
     private void draw() {
         if (holder.getSurface().isValid()) {
             canvas = holder.lockCanvas();
+            //color for the background
             canvas.drawColor(Color.argb(255, 0, 0, 0));
             Paint hitBoxs = new Paint();
             hitBoxs.setColor(Color.WHITE);
